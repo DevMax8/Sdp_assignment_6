@@ -1,0 +1,108 @@
+@startuml
+
+title Assignment 6 - Visitor Pattern
+
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam linetype ortho
+
+interface Element {
+    +getName(): String
+    +accept(visitor: Visitor): void
+    +getChildren(): List<Element>
+}
+
+abstract class AbstractElement {
+    -name: String
+    -parent: DirectoryNode
+    #AbstractElement(name: String)
+    +getName(): String
+    ~parent(): DirectoryNode
+    ~attachTo(directory: DirectoryNode): void
+}
+
+class FileNode {
+    -size: long
+    +FileNode(name: String, size: long)
+    +getSize(): long
+    +getChildren(): List<Element>
+    +accept(visitor: Visitor): void
+}
+
+class DirectoryNode {
+    -children: List<Element>
+    +DirectoryNode(name: String)
+    +addChild(child: Element): void
+    -attachChild(child: AbstractElement): void
+    +getChildren(): List<Element>
+    +accept(visitor: Visitor): void
+}
+
+interface Visitor {
+    +visit(file: FileNode): void
+    +visit(directory: DirectoryNode): void
+    +reset(): void
+    +setContext(path: String, depth: int): void
+}
+
+class TotalSizeVisitor {
+    -totalSize: long
+    +visit(file: FileNode): void
+    +visit(directory: DirectoryNode): void
+    +getTotalSize(): long
+    +reset(): void
+}
+
+class SearchVisitor {
+    -filenameCriterion: Predicate<String>
+    -minimumSize: long
+    -matches: List<String>
+    -currentPath: String
+    +SearchVisitor(filenameCriterion: Predicate<String>, minimumSize: long)
+    +visit(file: FileNode): void
+    +visit(directory: DirectoryNode): void
+    +getMatches(): List<String>
+    +reset(): void
+    +setContext(path: String, depth: int): void
+}
+
+class StatisticsVisitor {
+    -fileCount: int
+    -directoryCount: int
+    -maxDepth: int
+    -currentDepth: int
+    +visit(file: FileNode): void
+    +visit(directory: DirectoryNode): void
+    +getFileCount(): int
+    +getDirectoryCount(): int
+    +getMaxDepth(): int
+    +reset(): void
+    +setContext(path: String, depth: int): void
+}
+
+class FileSystemWalker {
+    +walk(root: Element, visitor: Visitor): void
+    -enqueueChildren(parent: Step, pending: Deque<Step>): void
+}
+
+Element <|.. AbstractElement
+AbstractElement <|-- FileNode
+AbstractElement <|-- DirectoryNode
+
+DirectoryNode "0..1" *-- "0..*" Element : children
+
+Visitor <|.. TotalSizeVisitor
+Visitor <|.. SearchVisitor
+Visitor <|.. StatisticsVisitor
+
+FileSystemWalker ..> Element : traverses
+FileSystemWalker ..> Visitor : applies
+
+Element ..> Visitor : accepts
+
+note right of Visitor
+  reset() and setContext()
+  have default implementations.
+end note
+
+@enduml

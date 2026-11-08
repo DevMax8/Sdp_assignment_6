@@ -1,0 +1,18 @@
+mvn clean test: BUILD SUCCESS
+{'tests': 25, 'failures': 0, 'errors': 0, 'skipped': 0}
+Java target: 17 (class major version 61)
+Runtime used for testing: Oracle JDK 25.0.1
+
+DoubleDispatchTest: 2 tests, 0 failures, 0 errors
+SearchVisitorTest: 3 tests, 0 failures, 0 errors
+StatisticsVisitorTest: 2 tests, 0 failures, 0 errors
+TotalSizeVisitorTest: 3 tests, 0 failures, 0 errors
+TraversalAndStateTest: 10 tests, 0 failures, 0 errors
+TreeIntegrityTest: 5 tests, 0 failures, 0 errors
+
+mvn exec:java: BUILD SUCCESS
+Total size: 1450 bytes
+Search: src/App.java; src/Main.java; src/utils/Helper.java
+Files: 6
+Directories: 4
+Maximum depth: 3
